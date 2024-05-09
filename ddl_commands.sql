@@ -28,7 +28,7 @@ CREATE TABLE FoodEstablishment (
     street_address VARCHAR(255) NOT NULL,
     city VARCHAR(100) NOT NULL,
     province VARCHAR(50) NOT NULL,
-    rating DECIMAL(3, 2),
+    rating DECIMAL(3, 2) NULL,
 );
 
 -- Table: FoodItem
@@ -45,8 +45,8 @@ CREATE TABLE FoodItem (
 CREATE TABLE FoodReview (
     review_id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    establishment_id INT,
-    item_id INT,
+    establishment_id INT NOT NULL,
+    item_id INT NULL,
     review_text TEXT NOT NULL,
     rating TINYINT UNSIGNED NOT NULL,
     review_month TINYINT NOT NULL,
