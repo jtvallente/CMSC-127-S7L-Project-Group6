@@ -1,8 +1,8 @@
 -- DML FOR PROJECT FEATURES
 -- 1. Add, update, and delete a food review (on a food establishment or a food item);
 -- Add a food review on a food establisment or a food item, assumming there are
--- variables for these values. Either can be, depending on the id given.
--- Establishment id or food id are NULL by default
+-- variables for these values. Either can be, dependeng if item id is given.
+-- Food id are NULL by default
 INSERT INTO
     FoodReview (
         review_id,
