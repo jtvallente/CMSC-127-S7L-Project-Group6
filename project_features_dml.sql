@@ -4,127 +4,153 @@
 -- variables for these values. Either can be, depending on the id given.
 -- Establishment id or food id are NULL by default
 INSERT INTO
-    foodreview (
-        reviewid,
+    FoodReview (
+        review_id,
+        user_id,
+        establishment_id,
+        review_text,
         rating,
-        datecreated,
-        establishmentid,
-        userid
+        review_month,
+        review_day,
+        review_year
     )
 VALUES
     (
         review_id,
-        rating,
-        CURDATE(),
+        user_id,
         establishment_id,
-        user_id
+        review_text,
+        rating,
+        MONTH (CURDATE ()),
+        DAY (CURDATE ()),
+        YEAR (CURDATE ()),
     );
 
 INSERT INTO
-    foodreview (
-        reviewid,
+    FoodReview (
+        review_id,
+        user_id,
+        establishment_id,
+        item_id,
+        review_text,
         rating,
-        datecreated,
-        foodid,
-        userid
+        review_month,
+        review_day,
+        review_year
     )
 VALUES
     (
         review_id,
+        user_id,
+        establishment_id,
+        item_id,
+        review_text,
         rating,
-        CURDATE(),
-        foodid,
-        user_id
+        MONTH (CURDATE ()),
+        DAY (CURDATE ()),
+        YEAR (CURDATE ()),
     );
 
 -- Update a food review on a food establishment or food item, review id is given 
 -- and assumming there are variables for these values.
 -- Update rating
-UPDATE foodreview
+UPDATE FoodReview
 SET
     rating = new_rating
 WHERE
-    reviewid = review_id;
+    review_id = review_id;
 
 -- Update review
-UPDATE foodreview
+UPDATE FoodReview
 SET
-    review = new_review
+    review_text = new_review_text
 WHERE
-    reviewid = review_id;
+    review_id = review_id;
 
 -- Update rating and review
-UPDATE foodreview
+UPDATE FoodReview
 SET
     rating = new_rating,
-    review = new_review
+    review_text = new_review_text
 WHERE
-    reviewid = review_id;
+    review_id = review_id;
 
 -- Delete a food review on a food establishment or food item, review id is given.
-DELETE FROM foodreview
+DELETE FROM FoodReview
 WHERE
-    reviewid = review_id;
+    review_id = review_id;
 
 -- 2. Add, delete, search, and update a food establishment;
 -- Add a food establishment, assumming there are variables for these values.
 -- Average rating is NULL by default
 INSERT INTO
-    foodestablishment (establishmentid, establishmentname, establishmentlocation)
+    FoodEstablishment (
+        establishment_id,
+        name,
+        street_address,
+        city,
+        province
+    )
 VALUES
     (
         establishment_id,
         establishment_name,
-        establishment_location
+        street_address,
+        city,
+        province
     );
 
 -- Delete a food establishment
-DELETE FROM foodestablishment
+DELETE FROM FoodEstablishment
 WHERE
-    establishmentid = establishment_id;
+    establishment_id = establishment_id;
 
 -- Search for a food establishment
 SELECT
-    establishmentid,
-    establishmentname,
-    establishmentlocation,
-    averagerating
+    establishment_id,
+    name,
+    street_address,
+    city,
+    province,
+    rating
 FROM
-    foodestablishment
+    FoodEstablishment
 WHERE
-    establishmentid = establishment_id;
+    establishment_id = establishment_id;
 
 -- Update a food establishment, establishment id is given. 
 -- Assumming there are variables for these values. 
 -- Update establishment name
-UPDATE foodestablishment
+UPDATE FoodEstablishment
 SET
-    establishmentname = new_name
+    name = new_name
 WHERE
-    establishmentid = establishment_id;
+    establishment_id = establishment_id;
 
 -- Update location
-UPDATE foodestablishment
+UPDATE FoodEstablishment
 SET
-    establishmentlocation = new_location
+    street_address = new_street_address,
+    city = new_city,
+    province = new_province
 WHERE
-    establishmentid = establishment_id;
+    establishment_id = establishment_id;
 
 -- Update average rating
-UPDATE foodestablishment
+UPDATE FoodEstablishment
 SET
-    averagerating = new_average_rating
+    rating = new_rating
 WHERE
-    establishmentid = establishment_id;
+    establishment_id = establishment_id;
 
 -- 3. Add, delete, search, and update a food item
 -- Add a food item, assumming there are variables for these values.
 -- Average rating is NULL by default
 INSERT INTO
-    fooditem (foodid, foodname, foodtype, price, establishmentid)
+    FoodItem (item_id, food_name, type, price, establishment_id)
 VALUES
     (
-        food_id,
+        item_id,
         food_name,
         food_type,
         food_price,
@@ -132,41 +158,41 @@ VALUES
     );
 
 -- Delete a food item
-DELETE FROM fooditem
+DELETE FROM FoodItem
 WHERE
-    foodid = food_id;
+    item_id = item_id;
 
 -- Search for a food item
 SELECT
-    foodid,
-    foodname,
-    foodtype,
+    item_id,
+    food_name,
+    type,
     price,
-    establishmentid
+    establishment_id
 FROM
-    fooditem
+    FoodItem
 WHERE
-    foodid = food_id;
+    item_id = item_id;
 
 -- Update a food item, food id is given. 
 -- Assumming there are variables for these values. 
 -- Update food name
-UPDATE fooditem
+UPDATE FoodItem
 SET
-    foodname = new_name
+    food_name = new_name
 WHERE
-    foodid = food_id;
+    item_id = item_id;
 
 -- Update food type
-UPDATE fooditem
+UPDATE FoodItem
 SET
-    foodtype = new_food_type
+    type = new_food_type
 WHERE
-    foodid = food_id;
+    item_id = item_id;
 
 -- Update price
-UPDATE fooditem
+UPDATE FoodItem
 SET
     price = new_price
 WHERE
-    foodid = food_id;
+    item_id = item_id;
