@@ -28,7 +28,6 @@ CREATE TABLE FoodEstablishment (
     street_address VARCHAR(255) NOT NULL,
     city VARCHAR(100) NOT NULL,
     province VARCHAR(50) NOT NULL,
-    rating DECIMAL(3, 2) NULL,
 );
 
 -- Table: FoodItem
