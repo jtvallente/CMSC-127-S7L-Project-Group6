@@ -19,7 +19,7 @@ mycursor = mydb.cursor()
 
 #This is just a sample logic for the main file
 # Define the query to select all rows from the 'users' table
-query = "SELECT * FROM users"
+query = "SELECT * FROM Users"
 
 # Execute the query
 mycursor.execute(query)
