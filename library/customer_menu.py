@@ -25,7 +25,6 @@ def print_customer_menu():
 def add_food_review():
     print("Adding food review...")
 
-
 def update_food_review():
     print("Updating food review...")
 

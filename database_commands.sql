@@ -65,4 +65,8 @@ CREATE TABLE IF NOT EXISTS FoodReview (
 INSERT INTO Users (user_id, username, password, role) 
 VALUES ('2021-67857', 'jtvallente', 'gno8fsbhrtx', 'customer');
 
+INSERT INTO Users (user_id, username, password, role) 
+VALUES ('2021-00234', 'aglicup', 'gno3fsafg', 'business_owner');
 
+INSERT INTO Users (user_id, username, password, role) 
+VALUES ('2022-67845', 'ctrojano', 'abcdefgh', 'customer');
