@@ -3,6 +3,7 @@ import os
 #from welcome_page import main_menu
 from customer_menu import customer_dashboard_menu
 from view_all_foodest import view_all_establishments
+from view_all_foodreviews import view_all_food_reviews
 
 def clear_screen():
     # Clear the terminal screen
@@ -27,8 +28,6 @@ def print_catalog_menu():
 #It will be replaced by the imported functions/libs created by other members
 
 
-def view_all_foodreview(connection):
-    print("Updating food review...")
 
 def my_dashboard(connection, user_id):
     print(user_id)
@@ -52,7 +51,7 @@ def catalog(connection, user_id):
         if choice == '1':
             view_all_establishments(connection)
         elif choice == '2':
-            view_all_foodreview()
+            view_all_food_reviews(connection)
         elif choice == '3':
             my_dashboard(connection, user_id)
         elif choice == '4':

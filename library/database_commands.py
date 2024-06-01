@@ -283,7 +283,7 @@ def view_all_FI(connection):
     view_FI = "SELECT * FROM FoodItem;"
     try:
         cursor.execute(view_FI)
-        records = cursor.fetchAll()
+        records = cursor.fetchall()
         for record in records:
             result.append(record)
 
@@ -295,159 +295,62 @@ def view_all_FI(connection):
 
 
 # View all food items from an establishment in the database where price = [None - None, 1 - ASC, 2 - DESC]
-def view_food_items(connection, id, type, price, price_range):
+def view_food_items(connection, id, type=None, price=None, price_range=None):
     result = []
     cursor = connection.cursor(dictionary=True)
-    result = None
 
-    if id == None:
-        if type == None: 
-            # Search food items from any establishment based on a given price range
-            query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE price >= %s AND price <= %s;"
-            try:
-                cursor.execute(query, (id, price_range['lowest'], price_range['highest']))
-                records = cursor.fetchAll()
-                for record in records:
-                    result.append(record)
-
-                return result
-            except Error as err:
-                print(Fore.RED + f"Error: '{err}'")
-
-            return result
-        else:
-            if not price_range:
-                # Search food items from any establishment based on a food type
-                query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE food_type = %s;"
-                try:
-                    cursor.execute(query, (type,))
-                    records = cursor.fetchAll()
-                    for record in records:
-                        result.append(record)
-
-                    return result
-                except Error as err:
-                    print(Fore.RED + f"Error: '{err}'")
-
-                return result
-            else:
-                # Search food items from any establishment based on a given price range and food type
-                query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE food_type = %s AND (price >= %s AND price <= %s);"
-                try:
-                    cursor.execute(query, (type, price_range['lowest'], price_range['highest']))
-                    records = cursor.fetchAll()
-                    for record in records:
-                        result.append(record)
-
-                    return result
-                except Error as err:
-                    print(Fore.RED + f"Error: '{err}'")
-
-                return result
-    else:
-        if type == None:
-            if price == None:
-                # View all food items from an establishment
-                query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s;"
-                try:
-                    cursor.execute(query, (id,))
-                    records = cursor.fetchAll()
-                    for record in records:
-                        result.append(record)
-
-                    return result
-                except Error as err:
-                    print(Fore.RED + f"Error: '{err}'")
-
-                return result
-            elif price == 1:
-                # View all food items from an establishment arranged according to price (ascending)
-                query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s ORDER BY price;"
-                try:
-                    cursor.execute(query, (id,))
-                    records = cursor.fetchAll()
-                    for record in records:
-                        result.append(record)
-
-                    return result
-                except Error as err:
-                    print(Fore.RED + f"Error: '{err}'")
-
-                return result
-            else:
-                # View all food items from an establishment arranged according to price (descending)
-                query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s ORDER BY price DESC;"
-                try:
-                    cursor.execute(query, (id,))
-                    records = cursor.fetchAll()
-                    for record in records:
-                        result.append(record)
-
-                    return result
-                except Error as err:
-                    print(Fore.RED + f"Error: '{err}'")
-
-                return result
-        else:
-            if price == None:
-                # View all food items from an establishment that belong to a food type
-                query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s AND food_type = %s;"
-                try:
-                    cursor.execute(query, (id, type))
-                    records = cursor.fetchAll()
-                    for record in records:
-                        result.append(record)
-
-                    return result
-                except Error as err:
-                    print(Fore.RED + f"Error: '{err}'")
-
-                return result
-            elif price == 1:
-                # View all food items from an establishment that belong to a food type, order by price (ascending)
-                query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s AND food_type = %s ORDER BY price;"
-                try:
-                    cursor.execute(query, (id, type))
-                    records = cursor.fetchAll()
-                    for record in records:
-                        result.append(record)
-
-                    return result
-                except Error as err:
-                    print(Fore.RED + f"Error: '{err}'")
-
-                return result
-            else:
-                # View all food items from an establishment that belong to a food type, order by price (descending)
-                query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s AND food_type = %s ORDER BY price DESC;"
-                try:
-                    cursor.execute(query, (id,))
-                    records = cursor.fetchAll()
-                    for record in records:
-                        result.append(record)
-
-                    return result
-                except Error as err:
-                    print(Fore.RED + f"Error: '{err}'")
-
-                return result
-
-# View food reviews within a month            
-def view_reviews_month(connection):
-    cursor = connection.cursor(dictionary=True)
-    result = None
-    food_reviews = "SELECT review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year FROM FoodReview WHERE review_month = MONTH(CURDATE());"
     try:
-        cursor.execute(food_reviews)
-        records = cursor.fetchAll()
+        if id is not None:
+            if type is None:
+                if price is None:
+                    # View all food items from an establishment
+                    query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s;"
+                    cursor.execute(query, (id,))
+                elif price == 1:
+                    # View all food items from an establishment arranged according to price (ascending)
+                    query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s ORDER BY price ASC;"
+                    cursor.execute(query, (id,))
+                else:
+                    # View all food items from an establishment arranged according to price (descending)
+                    query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s ORDER BY price DESC;"
+                    cursor.execute(query, (id,))
+            else:
+                if price is None:
+                    # View all food items from an establishment that belong to a food type
+                    query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s AND type = %s;"
+                    cursor.execute(query, (id, type))
+                elif price == 1:
+                    # View all food items from an establishment that belong to a food type, order by price (ascending)
+                    query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s AND type = %s ORDER BY price ASC;"
+                    cursor.execute(query, (id, type))
+                else:
+                    # View all food items from an establishment that belong to a food type, order by price (descending)
+                    query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE establishment_id = %s AND type = %s ORDER BY price DESC;"
+                    cursor.execute(query, (id, type))
+        else:
+            if type is None: 
+                # Search food items from any establishment based on a given price range
+                query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE price >= %s AND price <= %s;"
+                cursor.execute(query, (price_range['lowest'], price_range['highest']))
+            else:
+                if not price_range:
+                    # Search food items from any establishment based on a food type
+                    query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE type = %s;"
+                    cursor.execute(query, (type,))
+                else:
+                    # Search food items from any establishment based on a given price range and food type
+                    query = "SELECT item_id, food_name, price, type FROM FoodItem WHERE type = %s AND (price >= %s AND price <= %s);"
+                    cursor.execute(query, (type, price_range['lowest'], price_range['highest']))
+        
+        records = cursor.fetchall()
         for record in records:
             result.append(record)
 
-        return result
     except Error as err:
         print(Fore.RED + f"Error: '{err}'")
 
-    return result 
+    return result
+
 
 # Verify user credentials for signing in
 def authenticate_sign_in(connection, username, password):
@@ -465,7 +368,7 @@ def authenticate_sign_in(connection, username, password):
         else:
             return {"success": False, "message": "Invalid credentials. Please try again."}
 
-
+#view food establishment with high average rating
 def view_high_rating_FE(connection):
     cursor = connection.cursor(dictionary=True)
     high_rating_establishments = []
@@ -488,6 +391,7 @@ def view_high_rating_FE(connection):
 
     return high_rating_establishments
 
+#Search food item from any estb by price and type
 def search_food_item_bypriceft(connection, min_price=None, max_price=None, food_type=None):
     cursor = connection.cursor(dictionary=True)
     search_results = []
@@ -521,3 +425,93 @@ def search_food_item_bypriceft(connection, min_price=None, max_price=None, food_
         cursor.close()
 
     return search_results
+
+#View food items belonging to a food establishment
+def view_food_items_from_est(connection, establishment_id):
+    cursor = connection.cursor(dictionary=True)
+    food_items = []
+
+    query = """
+        SELECT fi.*, fe.name AS establishment_name
+        FROM FoodItem fi
+        JOIN FoodEstablishment fe ON fi.establishment_id = fe.establishment_id
+        WHERE fi.establishment_id = %s
+    """
+
+    try:
+        cursor.execute(query, (establishment_id,))
+        food_items = cursor.fetchall()
+    except Error as err:
+        print(f"Error: '{err}'")
+    finally:
+        cursor.close()
+
+    return food_items
+
+#get the username of a user using user_id 
+def get_username_by_user_id(connection, user_id):
+    cursor = connection.cursor(dictionary=True)
+    query = "SELECT username FROM Users WHERE user_id = %s;"
+    try:
+        cursor.execute(query, (user_id,))
+        record = cursor.fetchone()
+        if record:
+            return record['username']
+        else:
+            return None
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+        return None
+
+#view all food reviews from a food establishment
+def view_food_reviews_under_establishment(connection, establishment_id):
+    result = []
+    cursor = connection.cursor(dictionary=True)
+    query = """
+    SELECT review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year 
+    FROM FoodReview 
+    WHERE establishment_id = %s;
+    """
+    try:
+        cursor.execute(query, (establishment_id,))
+        records = cursor.fetchall()
+        for record in records:
+            result.append(record)
+        return result
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+    return result
+
+#view all food reviews from a food item
+def view_food_reviews_under_food(connection, food_id):
+    result = []
+    cursor = connection.cursor(dictionary=True)
+    query = """
+    SELECT review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year 
+    FROM FoodReview 
+    WHERE item_id = %s;
+    """
+    try:
+        cursor.execute(query, (food_id,))
+        records = cursor.fetchall()
+        for record in records:
+            result.append(record)
+        return result
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+    return result
+
+#view reviews within a month
+def view_reviews_month(connection):
+    cursor = connection.cursor(dictionary=True)
+    result = []
+    food_reviews = "SELECT review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year FROM FoodReview WHERE review_month = MONTH(CURDATE());"
+    try:
+        cursor.execute(food_reviews)
+        records = cursor.fetchall()
+        for record in records:
+            result.append(record)
+        return result
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+    return result
