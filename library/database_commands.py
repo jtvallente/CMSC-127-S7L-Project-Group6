@@ -211,7 +211,7 @@ def delete_user(connection, user_id):
 
 # Search for a food establishment in the database
 def search_food_establishment(connection, establishment_id):
-    cursor = connection.cursor()
+    cursor = connection.cursor(dictionary=True)
     food_estab = None
     search_FE = "SELECT establishment_id, name, street_address, city, province FROM FoodEstablishment WHERE establishment_id = %s LIMIT 1);"
 
@@ -227,7 +227,7 @@ def search_food_establishment(connection, establishment_id):
 
 # Search for a food item in the database
 def search_food_item(connection, item_id):
-    cursor = connection.cursor()
+    cursor = connection.cursor(dictionary=True)
     food_itm = None
     search_FI = "SELECT item_id, establishment_id, food_name, price, type FROM FoodItem WHERE item_id = %s LIMIT 1);"
 
@@ -239,19 +239,35 @@ def search_food_item(connection, item_id):
         print(Fore.RED + f"Error: '{err}'")
 
     return food_itm
-    
+
+
+# View food reviews of a user in the database
+def view_food_reviews(connection, user_id):
+    result = []
+    cursor = connection.cursor(dictionary=True)
+    view_FR = "SELECT review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year FROM foodreview WHERE user_id = %s;"
+    try:
+        cursor.execute(view_FR, (user_id,))
+        records = cursor.fetchall()
+        for record in records:
+            result.append(record)
+
+        return result
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+
+    return result
 
 
 # View all food establishments in the database
 def view_all_FE(connection):
     result = []
-    cursor = connection.cursor()
+    cursor = connection.cursor(dictionary=True)
     view_FE = "SELECT * FROM FoodEstablishment;"
     try:
         cursor.execute(view_FE)
         records = cursor.fetchAll()
         for record in records:
-            record = list(record)
             result.append(record)
 
         return result
@@ -263,13 +279,12 @@ def view_all_FE(connection):
 # View all food items in the database
 def view_all_FI(connection):
     result = []
-    cursor = connection.cursor()
+    cursor = connection.cursor(dictionary=True)
     view_FI = "SELECT * FROM FoodItem;"
     try:
         cursor.execute(view_FI)
         records = cursor.fetchAll()
         for record in records:
-            record = list(record)
             result.append(record)
 
         return result
@@ -282,7 +297,7 @@ def view_all_FI(connection):
 # View all food items from an establishment in the database where price = [None - None, 1 - ASC, 2 - DESC]
 def view_food_items(connection, id, type, price, price_range):
     result = []
-    cursor = connection.cursor()
+    cursor = connection.cursor(dictionary=True)
     result = None
 
     if id == None:
@@ -293,7 +308,6 @@ def view_food_items(connection, id, type, price, price_range):
                 cursor.execute(query, (id, price_range['lowest'], price_range['highest']))
                 records = cursor.fetchAll()
                 for record in records:
-                    record = list(record)
                     result.append(record)
 
                 return result
@@ -309,7 +323,6 @@ def view_food_items(connection, id, type, price, price_range):
                     cursor.execute(query, (type,))
                     records = cursor.fetchAll()
                     for record in records:
-                        record = list(record)
                         result.append(record)
 
                     return result
@@ -324,7 +337,6 @@ def view_food_items(connection, id, type, price, price_range):
                     cursor.execute(query, (type, price_range['lowest'], price_range['highest']))
                     records = cursor.fetchAll()
                     for record in records:
-                        record = list(record)
                         result.append(record)
 
                     return result
@@ -341,7 +353,6 @@ def view_food_items(connection, id, type, price, price_range):
                     cursor.execute(query, (id,))
                     records = cursor.fetchAll()
                     for record in records:
-                        record = list(record)
                         result.append(record)
 
                     return result
@@ -356,7 +367,6 @@ def view_food_items(connection, id, type, price, price_range):
                     cursor.execute(query, (id,))
                     records = cursor.fetchAll()
                     for record in records:
-                        record = list(record)
                         result.append(record)
 
                     return result
@@ -371,7 +381,6 @@ def view_food_items(connection, id, type, price, price_range):
                     cursor.execute(query, (id,))
                     records = cursor.fetchAll()
                     for record in records:
-                        record = list(record)
                         result.append(record)
 
                     return result
@@ -387,7 +396,6 @@ def view_food_items(connection, id, type, price, price_range):
                     cursor.execute(query, (id, type))
                     records = cursor.fetchAll()
                     for record in records:
-                        record = list(record)
                         result.append(record)
 
                     return result
@@ -402,7 +410,6 @@ def view_food_items(connection, id, type, price, price_range):
                     cursor.execute(query, (id, type))
                     records = cursor.fetchAll()
                     for record in records:
-                        record = list(record)
                         result.append(record)
 
                     return result
@@ -417,7 +424,6 @@ def view_food_items(connection, id, type, price, price_range):
                     cursor.execute(query, (id,))
                     records = cursor.fetchAll()
                     for record in records:
-                        record = list(record)
                         result.append(record)
 
                     return result
@@ -428,14 +434,13 @@ def view_food_items(connection, id, type, price, price_range):
 
 # View food reviews within a month            
 def view_reviews_month(connection):
-    cursor = connection.cursor()
+    cursor = connection.cursor(dictionary=True)
     result = None
     food_reviews = "SELECT review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year FROM FoodReview WHERE review_month = MONTH(CURDATE());"
     try:
         cursor.execute(food_reviews)
         records = cursor.fetchAll()
         for record in records:
-            record = list(record)
             result.append(record)
 
         return result
