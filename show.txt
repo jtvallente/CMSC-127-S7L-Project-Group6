@@ -1,0 +1,62 @@
+| FoodEstablishment | CREATE TABLE `FoodEstablishment` (
+  `establishment_id` varchar(36) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `street_address` varchar(255) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `province` varchar(50) NOT NULL,
+  PRIMARY KEY (`establishment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+| Users | CREATE TABLE `Users` (
+  `user_id` varchar(36) NOT NULL,
+  `username` varchar(20) NOT NULL,
+  `password` varchar(25) NOT NULL,
+  `role` enum('business_owner','customer') NOT NULL,
+  PRIMARY KEY (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci |
+
+| FoodItem | CREATE TABLE `FoodItem` (
+  `item_id` varchar(36) NOT NULL,
+  `establishment_id` varchar(36) NOT NULL,
+  `food_name` varchar(100) NOT NULL,
+  `price` decimal(8,2) NOT NULL,
+  `type` enum('meat','veg','etc.') NOT NULL,
+  PRIMARY KEY (`item_id`),
+  KEY `establishment_id` (`establishment_id`),
+  CONSTRAINT `fooditem_ibfk_1` FOREIGN KEY (`establishment_id`) REFERENCES `FoodEstablishment` (`establishment_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci |
+
+| FoodReview | CREATE TABLE `FoodReview` (
+  `review_id` varchar(36) NOT NULL,
+  `user_id` varchar(36) NOT NULL,
+  `establishment_id` varchar(36) NOT NULL,
+  `item_id` varchar(36) DEFAULT NULL,
+  `review_text` text NOT NULL,
+  `rating` tinyint(3) unsigned NOT NULL,
+  `review_month` tinyint(4) NOT NULL,
+  `review_day` tinyint(4) NOT NULL,
+  `review_year` smallint(6) NOT NULL,
+  PRIMARY KEY (`review_id`),
+  KEY `user_id` (`user_id`),
+  KEY `establishment_id` (`establishment_id`),
+  KEY `item_id` (`item_id`),
+  CONSTRAINT `foodreview_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `foodreview_ibfk_2` FOREIGN KEY (`establishment_id`) REFERENCES `FoodEstablishment` (`establishment_id`) ON DELETE CASCADE,
+  CONSTRAINT `foodreview_ibfk_3` FOREIGN KEY (`item_id`) REFERENCES `FoodItem` (`item_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci |
+
+| BusinessOwner | CREATE TABLE `BusinessOwner` (
+  `user_id` varchar(36) NOT NULL,
+  `establishment_id` varchar(36) NOT NULL,
+  PRIMARY KEY (`user_id`),
+  KEY `establishment_id` (`establishment_id`),
+  CONSTRAINT `businessowner_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`) ON DELETE CASCADE,
+  CONSTRAINT `businessowner_ibfk_2` FOREIGN KEY (`establishment_id`) REFERENCES `FoodEstablishment` (`establishment_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci |
+
+--------------------------------------------------------------------------------------------------------------------------------------+
+| Customer | CREATE TABLE `Customer` (
+  `user_id` varchar(36) NOT NULL,
+  PRIMARY KEY (`user_id`),
+  CONSTRAINT `customer_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `Users` (`user_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci |

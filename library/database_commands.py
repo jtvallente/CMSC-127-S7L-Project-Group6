@@ -266,7 +266,7 @@ def view_all_FE(connection):
     view_FE = "SELECT * FROM FoodEstablishment;"
     try:
         cursor.execute(view_FE)
-        records = cursor.fetchAll()
+        records = cursor.fetchall()
         for record in records:
             result.append(record)
 
@@ -465,3 +465,59 @@ def authenticate_sign_in(connection, username, password):
         else:
             return {"success": False, "message": "Invalid credentials. Please try again."}
 
+
+def view_high_rating_FE(connection):
+    cursor = connection.cursor(dictionary=True)
+    high_rating_establishments = []
+
+    query = """
+        SELECT fe.*, AVG(fr.rating) as avg_rating
+        FROM FoodEstablishment fe
+        JOIN FoodReview fr ON fe.establishment_id = fr.establishment_id
+        GROUP BY fe.establishment_id
+        HAVING avg_rating >= 4
+    """
+
+    try:
+        cursor.execute(query)
+        high_rating_establishments = cursor.fetchall()
+    except Error as err:
+        print(f"Error: '{err}'")
+    finally:
+        cursor.close()
+
+    return high_rating_establishments
+
+def search_food_item_bypriceft(connection, min_price=None, max_price=None, food_type=None):
+    cursor = connection.cursor(dictionary=True)
+    search_results = []
+
+    query = """
+        SELECT fi.*, fe.name AS establishment_name
+        FROM FoodItem fi
+        JOIN FoodEstablishment fe ON fi.establishment_id = fe.establishment_id
+        WHERE 1=1
+    """
+    params = []
+
+    if min_price is not None:
+        query += " AND fi.price >= %s"
+        params.append(min_price)
+    
+    if max_price is not None:
+        query += " AND fi.price <= %s"
+        params.append(max_price)
+    
+    if food_type is not None:
+        query += " AND fi.type = %s"
+        params.append(food_type)
+
+    try:
+        cursor.execute(query, params)
+        search_results = cursor.fetchall()
+    except Error as err:
+        print(f"Error: '{err}'")
+    finally:
+        cursor.close()
+
+    return search_results

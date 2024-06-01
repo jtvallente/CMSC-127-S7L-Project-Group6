@@ -2,6 +2,7 @@ from colorama import Fore, Style
 import os
 #from welcome_page import main_menu
 from customer_menu import customer_dashboard_menu
+from view_all_foodest import view_all_establishments
 
 def clear_screen():
     # Clear the terminal screen
@@ -24,10 +25,9 @@ def print_catalog_menu():
 
 #These 3 functions below are just placeholders. 
 #It will be replaced by the imported functions/libs created by other members
-def viel_all_establishments():
-    print("Adding food review...")
 
-def view_all_foodreview():
+
+def view_all_foodreview(connection):
     print("Updating food review...")
 
 def my_dashboard(connection, user_id):
@@ -50,7 +50,7 @@ def catalog(connection, user_id):
         choice = input("Enter your choice: ")
 
         if choice == '1':
-            viel_all_establishments()
+            view_all_establishments(connection)
         elif choice == '2':
             view_all_foodreview()
         elif choice == '3':
