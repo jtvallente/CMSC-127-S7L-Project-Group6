@@ -117,34 +117,22 @@ def add_user(connection, user_id, username, password, role):
     return False
 
 
-# Add a food review in the database
-def add_food_review(connection, review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year):
+def add_food_review_db(connection, review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year):
     cursor = connection.cursor()
     if item_id is None:
         add_FR = "INSERT INTO FoodReview (review_id, user_id, establishment_id, review_text, rating, review_month, review_day, review_year) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"
         FR_values = (review_id, user_id, establishment_id, review_text, rating, review_month, review_day, review_year)
-
-        try:
-            cursor.execute(add_FR, FR_values)
-            connection.commit()
-            return True
-        except Error as err:
-            print(Fore.RED + f"Error: '{err}'")
-        
-        return False
     else:
-        add_FR = "INSERT INTO FoodReview (review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);"
+        add_FR = "INSERT INTO FoodReview (review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
         FR_values = (review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year)
 
-        try:
-            cursor.execute(add_FR, FR_values)
-            connection.commit()
-            return True
-        except Error as err:
-            print(Fore.RED + f"Error: '{err}'")
-        
+    try:
+        cursor.execute(add_FR, FR_values)
+        connection.commit()
+        return True
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
         return False
-    
 
 # Delete a food review in the database
 def delete_food_review(connection, review_id):
@@ -224,6 +212,19 @@ def search_food_establishment(connection, establishment_id):
 
     return food_estab
 
+#update a food review
+def update_food_review(connection, review_id, new_review_text, new_rating):
+    cursor = connection.cursor()
+    update_query = "UPDATE FoodReview SET review_text = %s, rating = %s WHERE review_id = %s"
+    values = (new_review_text, new_rating, review_id)
+
+    try:
+        cursor.execute(update_query, values)
+        connection.commit()
+        return True
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+        return False
 
 # Search for a food item in the database
 def search_food_item(connection, item_id):
@@ -515,3 +516,52 @@ def view_reviews_month(connection):
     except Error as err:
         print(Fore.RED + f"Error: '{err}'")
     return result
+
+#get reviews made by the user
+def get_user_reviews(connection, user_id):
+    cursor = connection.cursor(dictionary=True)
+    user_reviews = []
+
+    query = """
+        SELECT review_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year 
+        FROM FoodReview 
+        WHERE user_id = %s
+    """
+
+    try:
+        cursor.execute(query, (user_id,))
+        user_reviews = cursor.fetchall()
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+    finally:
+        cursor.close()
+
+    return user_reviews
+
+#get the name of the establishment using id
+def get_estab_name_by_id(connection, establishment_id):
+    cursor = connection.cursor(dictionary=True)  # Use dictionary=True
+    query = "SELECT name FROM FoodEstablishment WHERE establishment_id = %s"
+    try:
+        cursor.execute(query, (establishment_id,))
+        result = cursor.fetchone()
+        return result['name'] if result else None
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+        return None
+    finally:
+        cursor.close()
+
+#get the name of the food item using id
+def get_food_name_by_id(connection, item_id):
+    cursor = connection.cursor(dictionary=True)  # Use dictionary=True
+    query = "SELECT food_name FROM FoodItem WHERE item_id = %s"
+    try:
+        cursor.execute(query, (item_id,))
+        result = cursor.fetchone()
+        return result['food_name'] if result else None
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+        return None
+    finally:
+        cursor.close()

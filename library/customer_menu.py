@@ -1,5 +1,8 @@
 from colorama import Fore, Style
 import os
+from add_food_review import add_food_review
+from update_food_review import edit_food_review
+from delete_food_review import delete_user_food_review
 
 
 def clear_screen():
@@ -21,17 +24,6 @@ def print_customer_menu():
     print(f"\n\033[{padding_color}m{' '*len(menu_text)}{reset}\n")
 
 
-#These 3 functions below are just placeholders. 
-#It will be replaced by the imported functions/libs created by other members
-def add_food_review():
-    print("Adding food review...")
-
-def update_food_review():
-    print("Updating food review...")
-
-def delete_food_review():
-    print("Deleting food review...")
-
 def customer_dashboard_menu(connection, user_id):
     while True:
         #clear_screen()  # Clear the screen
@@ -44,11 +36,11 @@ def customer_dashboard_menu(connection, user_id):
         choice = input("Enter your choice: ")
 
         if choice == '1':
-            add_food_review()
+            add_food_review(connection, user_id)
         elif choice == '2':
-            update_food_review()
+            edit_food_review(connection, user_id)
         elif choice == '3':
-            delete_food_review()
+            delete_user_food_review(connection, user_id)
         elif choice == '4':
             print("Returning to catalog...")
             break
