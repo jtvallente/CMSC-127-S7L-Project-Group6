@@ -1,6 +1,7 @@
 from colorama import Fore, Style
 import os
 
+
 def clear_screen():
     # Clear the terminal screen
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -31,9 +32,9 @@ def update_food_review():
 def delete_food_review():
     print("Deleting food review...")
 
-def customer_menu():
+def customer_dashboard_menu(connection, user_id):
     while True:
-        clear_screen()  # Clear the screen
+        #clear_screen()  # Clear the screen
         print_customer_menu()
         print(Fore.GREEN + "[1] Add food review")
         print(Fore.YELLOW + "[2] Update food review")
@@ -55,4 +56,4 @@ def customer_menu():
             print("Invalid choice. Please try again.")
 
 # Example usage
-customer_menu()
+#customer_dashboard_menu(connection, u)

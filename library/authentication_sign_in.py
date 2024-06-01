@@ -2,6 +2,7 @@ from colorama import Fore, Style
 from pwinput import pwinput
 from database_commands import authenticate_sign_in
 import os
+from catalog import catalog
 
 
 def clear_screen():
@@ -25,6 +26,7 @@ def print_log_in():
 
 # Resolves circular import issue for sign in
 def sign_in(connection):
+    user_id = None
     signed_in = False
     while not signed_in:
         print_log_in()
@@ -36,3 +38,12 @@ def sign_in(connection):
             user_id = result["message"]
             print(user_id)
             signed_in = True
+        else:
+            print("\n")
+            print(Fore.RED + "Incorrect credentials!")
+            print("\n")
+
+    catalog(connection, user_id)
+            
+
+            
