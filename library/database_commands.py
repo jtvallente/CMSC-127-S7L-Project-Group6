@@ -225,6 +225,19 @@ def update_food_review(connection, review_id, new_review_text, new_rating):
     except Error as err:
         print(Fore.RED + f"Error: '{err}'")
         return False
+    
+#update a food item
+def update_food_item(connection, item_id, new_name, new_price):
+    cursor = connection.cursor()
+    update_query = "UPDATE FoodItem SET food_name = %s, price = %s WHERE item_id = %s"
+    values = (new_name, new_price, item_id)
+    try:
+        cursor.execute(update_query, values)
+        connection.commit()
+        return True
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+        return False
 
 # Search for a food item in the database
 def search_food_item(connection, item_id):

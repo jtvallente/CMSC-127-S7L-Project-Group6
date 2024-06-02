@@ -1,4 +1,4 @@
-from database_commands import establish_server_connection
+from database_commands import establish_server_connection # type: ignore
 from welcome_page import main_menu
 
 
