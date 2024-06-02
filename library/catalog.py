@@ -25,12 +25,6 @@ def print_catalog_menu():
 
     print(f"\n\033[{padding_color}m{' '*len(menu_text)}{reset}\n")
 
-
-#These 3 functions below are just placeholders. 
-#It will be replaced by the imported functions/libs created by other members
-
-
-
 def my_dashboard(connection, user_id):
     print(user_id)
     if user_id[:4] == 'CUST':
