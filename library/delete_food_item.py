@@ -1,43 +1,54 @@
 from colorama import Fore, Style, init
-from database_commands import *
+from database_commands import delete_food_item, view_all_FE, view_food_items_from_est
 
 init(autoreset=True)
 
-def delete_user_food_review(connection, user_id):
+def delete_food_item_from_establishment(connection):
     try:
         while True:
-            print(Fore.CYAN + "\nDelete Food Review")
+            print(Fore.CYAN + "\nDelete a Food Item")
             
-            reviews = get_user_reviews(connection, user_id)
-            if not reviews:
-                print(Fore.RED + "No reviews found.")
+            # Display all food establishments
+            establishments = view_all_FE(connection)
+            if not establishments:
+                print(Fore.RED + "No food establishments found.")
                 return
             
-            print(Fore.YELLOW + "\nList of all your reviews:")
-            for i, review in enumerate(reviews, start=1):
-                establishment_name = get_estab_name_by_id(connection, review['establishment_id'])
-                food_item_name = get_food_name_by_id(connection, review['item_id']) if review['item_id'] else "N/A"
-                review_date = f"{review['review_month']:02}/{review['review_day']:02}/{review['review_year']}"
-                print(f"{i}. Review ID: {review['review_id']}, Establishment: {establishment_name}, "
-                      f"Food Item: {food_item_name}, Rating: {review['rating']}, Date: {review_date}")
-                print(f"   Review Text: {review['review_text']}")
+            print(Fore.YELLOW + "\nList of all food establishments:")
+            for i, est in enumerate(establishments, start=1):
+                print(f"{i}. {est['name']}")
 
-            review_choice = int(input(Fore.GREEN + "Enter the number of the review you want to delete: ")) - 1
-            review_id = reviews[review_choice]['review_id']
+            est_choice = int(input(Fore.GREEN + "Enter the number of the establishment: ")) - 1
+            est_id = establishments[est_choice]['establishment_id']
+            
+            # Display all food items belonging to the selected establishment
+            food_items = view_food_items_from_est(connection, est_id)
+            if not food_items:
+                print(Fore.RED + "No food items found for this establishment.")
+                continue
+            
+            print(Fore.YELLOW + "\nList of all food items in the establishment:")
+            for i, item in enumerate(food_items, start=1):
+                print(f"{i}. {item['food_name']}")
 
-            confirm = input(Fore.GREEN + "Are you sure you want to delete this review? (yes/no): ")
+            item_choice = int(input(Fore.GREEN + "Enter the number of the food item to delete: ")) - 1
+            item_id = food_items[item_choice]['item_id']
 
+            # Confirm deletion
+            confirm = input(Fore.RED + f"Are you sure you want to delete '{food_items[item_choice]['food_name']}'? (yes/no): ")
             if confirm.lower() == 'yes':
-                success = delete_food_review(connection, review_id)
+                success = delete_food_item(connection, item_id)
                 if success:
-                    print(Fore.GREEN + "Review deleted successfully!")
+                    print(Fore.GREEN + "Food item deleted successfully!")
                 else:
-                    print(Fore.RED + "Failed to delete the review.")
+                    print(Fore.RED + "Failed to delete the food item.")
             else:
-                print(Fore.YELLOW + "Deletion canceled.")
-
-            another = input(Fore.GREEN + "Do you want to delete another review? (yes/no): ")
+                print(Fore.YELLOW + "Deletion cancelled.")
+            
+            # Ask if the user wants to delete another food item
+            another = input(Fore.GREEN + "Do you want to delete another food item? (yes/no): ")
             if another.lower() != 'yes':
+                print(Fore.CYAN + "Returning to the dashboard...")
                 break
 
     except Error as err:
