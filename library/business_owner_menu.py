@@ -76,7 +76,7 @@ def view_all_food_items():
         else:
             print("Invalid choice. Please try again.")
         
-def business_owner_menu():
+def business_owner_dashboard_menu(connection, user_id):
     while True:
         clear_screen()  # Clear the screen
         print_business_owner_menu()
@@ -89,13 +89,13 @@ def business_owner_menu():
         choice = input("Enter your choice: ")
 
         if choice == '1':
-            add_food_establishment()
+            add_food_establishment(connection, user_id)
         elif choice == '2':
-            update_food_establishment()
+            update_food_establishment(connection, user_id)
         elif choice == '3':
-            delete_food_establishment()
+            delete_food_establishment(connection, user_id)
         elif choice == '4':
-            view_all_food_items()
+            view_all_food_items(connection, establishment_id)
         elif choice == '5':
             print("Returning to catalog...")
             break

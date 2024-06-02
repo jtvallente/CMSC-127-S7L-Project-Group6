@@ -3,22 +3,22 @@ from database_commands import view_all_FE, update_food_establishment
 
 init(autoreset=True)
 
-def update_food_establishment_details(connection):
+def update_food_establishment_details(connection, user_id):
     try:
         while True:
             print(Fore.CYAN + "\nUpdate Food Establishment Details")
 
-            establishments = view_all_FE(connection)
-            if not establishments:
-                print(Fore.RED + "No food establishments found.")
+            establishment = search_food_establishment(connection, establishment_id)
+            if not establishment:
+                print(Fore.RED + "No food establishment found.")
                 return
 
-            print(Fore.YELLOW + "\nList of all food establishments:")
-            for i, est in enumerate(establishments, start=1):
+            print(Fore.YELLOW + "\nList of food establishment:")
+            for i, est in enumerate(establishment, start=1):
                 print(f"{i}. {est['name']} - {est['street_address']}")
 
             est_choice = int(input(Fore.GREEN + "Enter the number of the establishment you want to update: ")) - 1
-            selected_est = establishments[est_choice]
+            selected_est = establishment[est_choice]
             est_id = selected_est['establishment_id']
 
             new_name = input(Fore.GREEN + "Enter the new name (leave blank to keep current): ")

@@ -5,6 +5,8 @@ from customer_menu import customer_dashboard_menu
 from view_all_foodest import view_all_establishments
 from view_all_foodreviews import view_all_food_reviews
 
+from business_owner_menu import business_owner_dashboard_menu 
+
 def clear_screen():
     # Clear the terminal screen
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -36,6 +38,7 @@ def my_dashboard(connection, user_id):
         customer_dashboard_menu(connection, user_id)
     else:
         print("going to business owner")
+        business_owner_dashboard_menu(connection, user_id)
 
 def catalog(connection, user_id):
     while True:

@@ -3,7 +3,7 @@ from database_commands import delete_food_item, view_all_FE, view_food_items_fro
 
 init(autoreset=True)
 
-def delete_food_item_from_establishment(connection):
+def delete_food_item_from_establishment(connection, user_id):
     try:
         while True:
             print(Fore.CYAN + "\nDelete a Food Item")
