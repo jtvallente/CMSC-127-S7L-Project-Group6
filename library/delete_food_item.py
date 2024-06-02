@@ -1,5 +1,6 @@
+from aifc import Error
 from colorama import Fore, Style, init
-from database_commands import delete_food_item, view_all_FE, view_food_items_from_est
+from database_commands import delete_food_item, view_food_items_from_est, get_establishment_id_by_user_id
 
 init(autoreset=True)
 
@@ -8,36 +9,35 @@ def delete_food_item_from_establishment(connection, user_id):
         while True:
             print(Fore.CYAN + "\nDelete a Food Item")
             
-            # Display all food establishments
-            establishments = view_all_FE(connection)
-            if not establishments:
-                print(Fore.RED + "No food establishments found.")
+            establishment_id = get_establishment_id_by_user_id(connection, user_id)
+            if not establishment_id:
+                print(Fore.RED + "You don't have any establishments yet.")
+                return
+
+            food_items = view_food_items_from_est(connection, establishment_id)
+            if not food_items:
+                print(Fore.RED + "No food items found.")
                 return
             
-            print(Fore.YELLOW + "\nList of all food establishments:")
-            for i, est in enumerate(establishments, start=1):
-                print(f"{i}. {est['name']}")
+            print(Fore.YELLOW + "\nList of all food items:")
+            for i, food in enumerate(food_items, start=1):
+                print(f"{i}. {food['food_name']}")
 
-            est_choice = int(input(Fore.GREEN + "Enter the number of the establishment: ")) - 1
-            est_id = establishments[est_choice]['establishment_id']
-            
-            # Display all food items belonging to the selected establishment
-            food_items = view_food_items_from_est(connection, est_id)
-            if not food_items:
-                print(Fore.RED + "No food items found for this establishment.")
+            try:
+                food_choice = int(input(Fore.GREEN + "Enter the number of the food item to delete: ")) - 1
+                if food_choice < 0 or food_choice >= len(food_items):
+                    print(Fore.RED + "Invalid choice. Please enter a valid number.")
+                    continue
+
+                selected_food = food_items[food_choice]
+            except (ValueError, IndexError):
+                print(Fore.RED + "Invalid input. Please enter a valid number.")
                 continue
-            
-            print(Fore.YELLOW + "\nList of all food items in the establishment:")
-            for i, item in enumerate(food_items, start=1):
-                print(f"{i}. {item['food_name']}")
-
-            item_choice = int(input(Fore.GREEN + "Enter the number of the food item to delete: ")) - 1
-            item_id = food_items[item_choice]['item_id']
 
             # Confirm deletion
-            confirm = input(Fore.RED + f"Are you sure you want to delete '{food_items[item_choice]['food_name']}'? (yes/no): ")
-            if confirm.lower() == 'yes':
-                success = delete_food_item(connection, item_id)
+            confirm = input(Fore.RED + f"Are you sure you want to delete '{selected_food['food_name']}'? (yes/no): ").strip().lower()
+            if confirm == 'yes':
+                success = delete_food_item(connection, selected_food['item_id'])
                 if success:
                     print(Fore.GREEN + "Food item deleted successfully!")
                 else:
@@ -46,10 +46,11 @@ def delete_food_item_from_establishment(connection, user_id):
                 print(Fore.YELLOW + "Deletion cancelled.")
             
             # Ask if the user wants to delete another food item
-            another = input(Fore.GREEN + "Do you want to delete another food item? (yes/no): ")
-            if another.lower() != 'yes':
+            another = input(Fore.GREEN + "Do you want to delete another food item? (yes/no): ").strip().lower()
+            if another != 'yes':
                 print(Fore.CYAN + "Returning to the dashboard...")
                 break
 
     except Error as err:
         print(Fore.RED + f"Error: '{err}'")
+

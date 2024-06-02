@@ -2,22 +2,34 @@ from colorama import Fore, Style, init
 from database_commands import *
 init(autoreset=True)
 
-def update_food_item_from_establishment(connection, establishment_id):
+def update_food_item_from_establishment(connection, user_id):
     try:
         while True:
             print(Fore.CYAN + "\nUpdate a Food Item")
             
+            establishment_id = get_establishment_id_by_user_id(connection, user_id)
+            if not establishment_id:
+                print(Fore.RED + "You don't have food establishments yet!")
+                return
+
             food_items = view_food_items_from_est(connection, establishment_id)
             if not food_items:
                 print(Fore.RED + "No food items found for this establishment.")
                 return
-            
-            print(Fore.YELLOW + "\nList of all food items in the establishment:")
+
+            print(Fore.YELLOW + "\nList of all food items:")
             for i, item in enumerate(food_items, start=1):
                 print(f"{i}. {item['food_name']} - ${item['price']}")
             
-            item_choice = int(input(Fore.GREEN + "Enter the number of the food item to edit: ")) - 1
-            selected_item = food_items[item_choice]
+            try:
+                item_choice = int(input(Fore.GREEN + "Enter the number of the food item to edit: ")) - 1
+                if item_choice < 0 or item_choice >= len(food_items):
+                    print(Fore.RED + "Invalid choice. Please try again.")
+                    continue
+                selected_item = food_items[item_choice]
+            except (ValueError, IndexError):
+                print(Fore.RED + "Invalid input. Please enter a valid number.")
+                continue
 
             print(Fore.CYAN + f"\nEditing {selected_item['food_name']}")
             new_name = input(Fore.GREEN + "Enter new name (leave blank to keep current): ").strip()

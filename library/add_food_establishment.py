@@ -9,17 +9,9 @@ def add_food_establishment(connection, user_id):
         print(Fore.CYAN + "\nAdd a Food Establishment")
 
         # Check if the owner already has an establishment
-        query = """
-        SELECT establishment_id 
-        FROM BusinessOwner 
-        WHERE user_id = %s
-        """
-        cursor = connection.cursor()
-        cursor.execute(query, (user_id,))
-        result = cursor.fetchone()
-        
-        if result:
-            print(Fore.RED + "You already have an establishment. Please delete it before adding a new one.")
+        establishment_id = get_establishment_id_by_user_id(connection, user_id)
+        if establishment_id:
+            print(Fore.RED + "\nYou already have an establishment. Please delete it before adding a new one.\n")
             return
         
         name = input(Fore.GREEN + "Enter the establishment name: ").strip()
@@ -33,9 +25,10 @@ def add_food_establishment(connection, user_id):
 
         establishment_id = generate_unique_id()
 
-        success = add_food_establishment(connection, establishment_id, name, street_address, city, province)
+        success = add_food_establishment_to_db(connection, establishment_id, name, street_address, city, province)
         if success:
             print(Fore.GREEN + "Food establishment added successfully!")
+            add_businessowner(connection, user_id, establishment_id)
         else:
             print(Fore.RED + "Failed to add the food establishment.")
 

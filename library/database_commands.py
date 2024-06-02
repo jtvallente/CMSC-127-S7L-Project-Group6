@@ -39,7 +39,7 @@ def check_username_exists(connection, user_name):
 
 
 # Add a food establishment in the database
-def add_food_establishment(connection, establishment_id, name, street_address, city, province):
+def add_food_establishment_to_db(connection, establishment_id, name, street_address, city, province):
     cursor = connection.cursor()
     add_FE = "INSERT INTO FoodEstablishment (establishment_id, name, street_address, city, province) VALUES (%s, %s, %s, %s, %s);"
     FE_values = (establishment_id, name, street_address, city, province)
@@ -50,8 +50,7 @@ def add_food_establishment(connection, establishment_id, name, street_address, c
         return True
     except Error as err:
         print(Fore.RED + f"Error: '{err}'")
-
-    return False
+        return False
 
 
 # Add a food item in the database
@@ -201,7 +200,7 @@ def delete_user(connection, user_id):
 def search_food_establishment(connection, establishment_id):
     cursor = connection.cursor(dictionary=True)
     food_estab = None
-    search_FE = "SELECT establishment_id, name, street_address, city, province FROM FoodEstablishment WHERE establishment_id = %s LIMIT 1);"
+    search_FE = "SELECT establishment_id, name, street_address, city, province FROM FoodEstablishment WHERE establishment_id = %s LIMIT 1;"
 
     try:
         cursor.execute(search_FE, (establishment_id,))
@@ -578,3 +577,28 @@ def get_food_name_by_id(connection, item_id):
         return None
     finally:
         cursor.close()
+
+#get establishment id by user id
+def get_establishment_id_by_user_id(connection, user_id):
+    cursor = connection.cursor()
+    query = "SELECT establishment_id FROM BusinessOwner WHERE user_id = %s;"
+    cursor.execute(query, (user_id,))
+    result = cursor.fetchone()
+    return result[0] if result else None
+
+#update food establishment
+def update_food_establishment(connection, establishment_id, new_name, new_street_address, new_city, new_province):
+    cursor = connection.cursor()
+    update_FE = "UPDATE FoodEstablishment SET name = %s, street_address = %s, city = %s, province = %s WHERE establishment_id = %s;"
+    FE_values = (new_name, new_street_address, new_city, new_province, establishment_id)
+
+    try:
+        cursor.execute(update_FE, FE_values)
+        connection.commit()
+        return True
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+
+    return False
+
+

@@ -26,23 +26,30 @@ def edit_food_review(connection, user_id):
             review_choice = int(input(Fore.GREEN + "Enter the number of the review you want to edit: ")) - 1
             review_id = reviews[review_choice]['review_id']
 
-            new_review_text = input(Fore.GREEN + "Enter the new review text: ")
-            new_rating = int(input(Fore.GREEN + "Enter the new rating (1-5): "))
-            confirm = input(Fore.GREEN + "Do you want to save the changes? (yes/no): ")
+            new_review_text = input(Fore.GREEN + "Enter the new review text (leave blank to keep current): ")
+            new_rating = input(Fore.GREEN + "Enter the new rating (1-5, leave blank to keep current): ")
+            
+            # Check if the user entered new review text or rating
+            new_review_text = new_review_text.strip() if new_review_text.strip() else reviews[review_choice]['review_text']
+            new_rating = int(new_rating.strip()) if new_rating.strip() else reviews[review_choice]['rating']
 
-            if confirm.lower() == 'yes':
+            print(Fore.CYAN + f"\nReview changes for Review ID: {review_id}")
+            print(Fore.YELLOW + f"New Review Text: {new_review_text}")
+            print(Fore.YELLOW + f"New Rating: {new_rating}")
+            
+            confirm = input(Fore.GREEN + "Do you want to save the changes? (yes/no): ").strip().lower()
+            if confirm == 'yes':
                 success = update_food_review(connection, review_id, new_review_text, new_rating)
                 if success:
                     print(Fore.GREEN + "Review updated successfully!")
                 else:
                     print(Fore.RED + "Failed to update the review.")
             else:
-                print(Fore.YELLOW + "Edit canceled.")
+                print(Fore.YELLOW + "Edit cancelled.")
 
-            another = input(Fore.GREEN + "Do you want to edit another review? (yes/no): ")
-            if another.lower() != 'yes':
+            another = input(Fore.GREEN + "Do you want to edit another review? (yes/no): ").strip().lower()
+            if another != 'yes':
                 break
 
     except Error as err:
         print(Fore.RED + f"Error: '{err}'")
-

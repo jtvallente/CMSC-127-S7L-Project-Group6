@@ -1,5 +1,5 @@
 import unique_id_generator
-from database_commands import establish_server_connection, check_username_exists, add_user, add_customer, add_businessowner, add_food_establishment, add_food_item
+from database_commands import establish_server_connection, check_username_exists, add_user, add_customer, add_businessowner, add_food_establishment_to_db, add_food_item
 from authentication_sign_in import sign_in
 from colorama import Fore
 from pwinput import pwinput
@@ -168,7 +168,7 @@ def create_account(connection, role):
             else:
                 print(Fore.RED + "Failed to add new customer")
         else:
-            if add_food_establishment(connection, food_establishment["establishment_id"], food_establishment["name"], food_establishment["street"], food_establishment["city"], food_establishment["province"]):
+            if add_food_establishment_to_db(connection, food_establishment["establishment_id"], food_establishment["name"], food_establishment["street"], food_establishment["city"], food_establishment["province"]):
                 print(Fore.GREEN + "Your food establishment has been successfully created!")
                 for item in food_establishment["food_items"]:
                     add_food_item(connection, item["item_id"], item["establishment_id"], item["food_name"], item["food_price"], item["food_type"])

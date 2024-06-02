@@ -1,25 +1,18 @@
 from colorama import Fore, Style, init
-from database_commands import add_food_item, view_all_FE
+from database_commands import *
 from unique_id_generator import generate_unique_id
 
 init(autoreset=True)
 
-def add_food_item_to_establishment(connection):
+def add_food_item_to_establishment(connection, user_id):
     try:
         while True:
             print(Fore.CYAN + "\nAdd a Food Item")
+            establishment_id = get_establishment_id_by_user_id(connection, user_id)
 
-            establishments = view_all_FE(connection)
-            if not establishments:
-                print(Fore.RED + "No food establishments found.")
+            if not establishment_id:
+                print(Fore.RED + "\nYou haven't added a food establishment yet!\n")
                 return
-
-            print(Fore.YELLOW + "\nList of all food establishments:")
-            for i, est in enumerate(establishments, start=1):
-                print(f"{i}. {est['name']}")
-
-            est_choice = int(input(Fore.GREEN + "Enter the number of the establishment: ")) - 1
-            est_id = establishments[est_choice]['establishment_id']
 
             food_name = input(Fore.GREEN + "Enter the food name: ").strip()
             if not food_name:
@@ -28,8 +21,11 @@ def add_food_item_to_establishment(connection):
 
             try:
                 price = float(input(Fore.GREEN + "Enter the price: ").strip())
+                if price < 0:
+                    print(Fore.RED + "Price cannot be negative.")
+                    continue
             except ValueError:
-                print(Fore.RED + "Price must be a number.")
+                print(Fore.RED + "Price must be a valid number.")
                 continue
 
             food_type = input(Fore.GREEN + "Enter the food type (meat, veg, etc.): ").strip()
@@ -40,10 +36,10 @@ def add_food_item_to_establishment(connection):
             confirm = input(Fore.GREEN + "Do you want to save the food item? (yes/no): ").strip().lower()
             if confirm != 'yes':
                 print(Fore.YELLOW + "Food item not saved.")
-                return
+                continue
 
             item_id = generate_unique_id()
-            success = add_food_item(connection, item_id, est_id, food_name, price, food_type)
+            success = add_food_item(connection, item_id, establishment_id, food_name, price, food_type)
             if success:
                 print(Fore.GREEN + "Food item added successfully!")
             else:
