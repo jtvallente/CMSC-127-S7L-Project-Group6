@@ -99,4 +99,4 @@ def view_all_establishments(connection):
                 print(Fore.RED + "Invalid choice. Please enter a number between 1 and 4.")
 
     else:
-        print(Fore.RED + "No establishment found.")
+        print(Fore.RED + "No food establishment found.")

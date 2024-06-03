@@ -14,7 +14,7 @@ def delete_food_establishment_menu(connection, user_id):
                 print(Fore.RED + "\nNo food establishment found.\n")
                 return
 
-            print(Fore.YELLOW + "\nList of all food establishments:")
+            print(Fore.YELLOW + "\nYour food establishment:")
             print(f" -  {establishment['name']}")
 
             establishment_name = input(Fore.GREEN + "Enter the name of the establishment to delete: ")
