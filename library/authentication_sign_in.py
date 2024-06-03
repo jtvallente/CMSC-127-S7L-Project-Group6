@@ -42,7 +42,8 @@ def sign_in(connection):
             print("\n")
             print(Fore.RED + "Incorrect credentials!")
             print("\n")
-
+    
+    clear_screen() 
     catalog(connection, user_id)
             
 

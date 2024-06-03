@@ -37,15 +37,18 @@ def view_all_food_reviews(connection):
                     if month_choice.lower() == 'yes':
                         monthly_reviews = view_reviews_month(connection)
                         print(Fore.YELLOW + "\nReviews within the current month:")
-                        if monthly_reviews:
+                        rev_count = 0
+                        if not monthly_reviews:
                             for review in monthly_reviews:
                                 if review['establishment_id'] == est_id:
+                                    rev_count += 1
                                     username = get_username_by_user_id(connection, review['user_id'])
                                     review_date = f"{review['review_month']:02}/{review['review_day']:02}/{review['review_year']}"
                                     print(f"Review ID: {review['review_id']}, Reviewed by: {username}, Rating: {review['rating']}, Date: {review_date}, Text: {review['review_text']}")
-                        else:
+                        if rev_count == 0:
                             print(Fore.RED + "No reviews found for this establishment within the current month.")
                 else:
+
                     print(Fore.RED + "No food establishments found.")
 
             elif choice == '2':
@@ -71,14 +74,16 @@ def view_all_food_reviews(connection):
                     month_choice = input(Fore.GREEN + "Do you want to see reviews within the current month? (yes/no): ")
                     if month_choice.lower() == 'yes':
                         monthly_reviews = view_reviews_month(connection)
+                        rev_count = 0
                         print(Fore.YELLOW + "\nReviews within the current month:")
                         if monthly_reviews:
                             for review in monthly_reviews:
                                 if review['item_id'] == item_id:
+                                    rev_count += 1
                                     username = get_username_by_user_id(connection, review['user_id'])
                                     review_date = f"{review['review_month']:02}/{review['review_day']:02}/{review['review_year']}"
                                     print(f"Review ID: {review['review_id']}, Reviewed by: {username}, Rating: {review['rating']}, Date: {review_date}, Text: {review['review_text']}")
-                        else:
+                        if rev_count == 0:
                             print(Fore.RED + "No reviews found for this food item within the current month.")
                 else:
                     print(Fore.RED + "No food items found.")

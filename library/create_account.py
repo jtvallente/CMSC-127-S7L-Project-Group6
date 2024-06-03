@@ -88,24 +88,29 @@ def get_food_establishment_details():
         while len(food_name) == 0:
             food_name = input(Fore.BLUE + "Enter food name: ")
             if len(food_name) == 0: print(Fore.RED + "Food name cannot be empty!")
+
         while not valid_food_type:
             type = input(Fore.BLUE + "Enter food type (1 - Meat, 2 - Veg, 3 - Etc.): ")
             try:
                 food_type = int(type)
-                print(type)
-                if food_type < 0 and food_type > 3:
-                    print(Fore.RED + "Invalid food type!")
+                if food_type < 1 or food_type > 3:
+                    print(Fore.RED + "Invalid food type! Please enter 1, 2, or 3.")
                 else:
                     valid_food_type = True
-                break
+                    break
             except ValueError:
-                print(Fore.RED + "Invalid food type!")
+                print(Fore.RED + "Invalid food type! Please enter a number.")
+
+
         while not valid_food_price:
             price = input(Fore.BLUE + "Enter food price: ")
             try:
                 food_price = float(price)
-                valid_food_price = True
-                break
+                if food_price <= 0:
+                    print(Fore.RED + "Food price must be greater than 0!")
+                else:
+                    valid_food_price = True
+                    break
             except ValueError:
                 print(Fore.RED + "Invalid food price!")
 

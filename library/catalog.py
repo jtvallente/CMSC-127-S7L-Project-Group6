@@ -28,10 +28,12 @@ def print_catalog_menu():
 def my_dashboard(connection, user_id):
     print(user_id)
     if user_id[:4] == 'CUST':
-        print("going to cust dashb")
+        clear_screen()
+        #print("going to cust dashb")
         customer_dashboard_menu(connection, user_id)
     else:
-        print("going to business owner")
+        clear_screen()
+        #print("going to business owner")
         business_owner_dashboard_menu(connection, user_id)
 
 def catalog(connection, user_id):
