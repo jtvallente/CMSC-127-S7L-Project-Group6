@@ -271,6 +271,40 @@ def view_food_reviews(connection, user_id):
 
     return result
 
+# View reviews within a month of a user in the database
+def view_reviews_month_user(connection, id):
+    cursor = connection.cursor(dictionary=True)
+    result = []
+    user_id = (id,)
+    food_reviews = "SELECT review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year FROM foodreview WHERE user_id = %s AND (review_year = YEAR(CURDATE()) AND review_month = MONTH(CURDATE()));"
+    try:
+        cursor.execute(food_reviews, user_id)
+        records = cursor.fetchall()
+        for record in records:
+            result.append(record)
+        return result
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+
+    return result
+    
+# View reviews within a month for an FE in the database
+def view_reviews_month_estab(connection, id):
+    cursor = connection.cursor(dictionary=True)
+    result = []
+    FE_id = (id,)
+    food_reviews = "SELECT review_id, user_id, establishment_id, item_id, review_text, rating, review_month, review_day, review_year FROM foodreview WHERE establishment_id = %s AND (review_year = YEAR(CURDATE()) AND review_month = MONTH(CURDATE()));"
+    try:
+        cursor.execute(food_reviews, FE_id)
+        records = cursor.fetchall()
+        for record in records:
+            result.append(record)
+        return result
+    except Error as err:
+        print(Fore.RED + f"Error: '{err}'")
+
+    return result
+
 
 # View all food establishments in the database
 def view_all_FE(connection):
